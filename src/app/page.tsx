@@ -2,6 +2,8 @@
 import { useMemo, useRef, useState } from "react";
 import * as Label from "@radix-ui/react-label";
 import Image from "next/image";
+import { PromoTopBar } from "@/app/PagePromoTop";
+import { sendEmail } from "@/app/actions";
 
 // --- ПРАЙС/НАСТРОЙКИ ---
 const PRICE_PER_M2 = 90; // MDL за м² (пример)
@@ -24,6 +26,7 @@ export default function MosquitoScreensLanding() {
   const [widthMm, setWidthMm] = useState<number | "">(""); // ширина в мм
   const [heightMm, setHeightMm] = useState<number | "">(""); // высота в мм
   const [qty, setQty] = useState<number | "">("");
+  const [sendEmailState, setSendEmailState] = useState(false);
 
   const areaM2 = useMemo(() => {
     if (!widthMm || !heightMm || !qty) return 0;
@@ -67,11 +70,12 @@ export default function MosquitoScreensLanding() {
 
   return (
     <main className="min-h-screen bg-white text-gray-900">
+      <PromoTopBar />
       {/* HERO */}
       <section className="relative isolate overflow-hidden">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:py-20 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-5 sm:py-20 lg:px-8">
           <div className="grid items-center gap-10 lg:grid-cols-2">
-            <div>
+            <div className="order-2 lg:order-1">
               <h1 className="text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">
                 Москитные сетки для окон
               </h1>
@@ -208,9 +212,9 @@ export default function MosquitoScreensLanding() {
 
             <div className="flex flex-wrap items-center gap-3">
               <button
-                disabled={hasErrors}
+                disabled={hasErrors || sendEmailState}
                 className="rounded-2xl bg-black px-5 py-3 text-white shadow hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-                onClick={() => {
+                onClick={async () => {
                   if (hasErrors) return;
                   const w = Number(widthMm);
                   const h = Number(heightMm);
@@ -218,15 +222,14 @@ export default function MosquitoScreensLanding() {
                   const msg = `Здравствуйте! Хочу заказать москітные сетки.\nРазмеры: ${w}×${h} мм, количество: ${q}.\nИтого к оплате: ${formatMDL(
                     rawTotal
                   )}. Подскажите сроки и монтаж.`;
-                  // Открываем мессенджер/телефон. Замените на свой номер/линк.
-                  const encoded = encodeURIComponent(msg);
-                  window.open(
-                    `https://wa.me/37300000000?text=${encoded}`,
-                    "_blank"
-                  );
+
+                  await sendEmail(msg);
+                  setSendEmailState(true);
                 }}
               >
-                Узнать итоговую стоимость
+                {sendEmailState
+                  ? "Заявка отправлена! Наш менеджер свяжется с вами в ближайшее время."
+                  : "Узнать итоговую стоимость"}
               </button>
               <button
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -285,6 +288,71 @@ export default function MosquitoScreensLanding() {
                 />
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+      {/* REVIEWS */}
+      <section id="reviews" className="bg-gray-50 py-16">
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <h2 className="text-2xl font-bold sm:text-3xl">Отзывы клиентов</h2>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              {
+                name: "Марина, Кишинёв",
+                text: "Заказали 6 сеток на квартиру. Замер, изготовление и монтаж прошли быстро. Сетки сидят плотно, вид из окна не закрывают.",
+              },
+              {
+                name: "Ион, Бельцы",
+                text: "Отличное качество рамок и креплений. Летом комаров стало заметно меньше, можно спать с открытым окном.",
+              },
+              {
+                name: "Ольга, Сороки",
+                text: "Понравилось, что сделали точно по размерам. Цена прозрачная, без скрытых доплат.",
+              },
+            ].map((r, i) => (
+              <div key={i} className="rounded-2xl bg-white p-6 shadow">
+                <div className="text-lg font-semibold">{r.name}</div>
+                <p className="mt-3 text-gray-700">“{r.text}”</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="py-16">
+        <div className="mx-auto max-w-5xl px-4 lg:px-8">
+          <h2 className="text-2xl font-bold sm:text-3xl">Частые вопросы</h2>
+          <div className="mt-8 divide-y divide-gray-200 rounded-2xl border overflow-hidden ">
+            {[
+              {
+                q: "Как правильно снять размеры окна?",
+                a: "Измерьте световой проём рамки по ширине и высоте в миллиметрах (три замера по каждой стороне) и укажите минимальные значения. Если сомневаетесь — мы можем помочь с замером.",
+              },
+              {
+                q: "Что входит в цену?",
+                a: "Изготовление рамки, полотно и сборка. Доставка и монтаж рассчитываются отдельно в зависимости от города.",
+              },
+              {
+                q: "Можно ли снять сетку на зиму?",
+                a: "Да, рамочные сетки легко снимаются. Рекомендуем мыть тёплой водой с мягким средством и хранить в сухом помещении.",
+              },
+              {
+                q: "Какие ограничения по размерам?",
+                a: "Стандартно — от 300 до 2200 мм по каждой стороне. Если у вас нестандартное окно, напишите нам — подскажем решение.",
+              },
+            ].map((item, i) => (
+              <details key={i} className="group">
+                <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-4 font-medium hover:bg-gray-50">
+                  <span>{item.q}</span>
+                  <span className="text-gray-400 group-open:rotate-180 transition">
+                    ▾
+                  </span>
+                </summary>
+                <div className="px-4 pb-5 text-gray-700">{item.a}</div>
+                <div className="h-px w-full bg-gray-200" />
+              </details>
+            ))}
           </div>
         </div>
       </section>
