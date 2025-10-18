@@ -80,8 +80,8 @@ export default function MosquitoScreensLanding() {
                 Москитные сетки для окон
               </h1>
               <p className="mt-4 text-lg text-gray-600">
-                Производим и устанавливаем наружные рамочные москитные сетки в
-                Молдове. Быстрый расчет цены, и гарантия качества.
+                Производим наружные рамочные москитные сетки в Молдове. Быстрый
+                расчет цены, и гарантия качества.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <button
