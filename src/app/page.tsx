@@ -99,7 +99,7 @@ export default function MosquitoScreensLanding() {
                 <li>• Защита от комаров, мошек и пыли, не мешает обзору</li>
               </ul>
             </div>
-            <div className="relative">
+            <div className="relative order-1 lg:order-2">
               <div className="aspect-[4/3] w-full overflow-hidden rounded-3xl shadow-lg">
                 <Image
                   width={"1000"}
