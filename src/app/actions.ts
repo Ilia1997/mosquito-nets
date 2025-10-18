@@ -2,7 +2,15 @@
 
 import nodemailer from "nodemailer";
 
-export const sendEmail = async (message: string) => {
+export const sendEmail = async ({
+  message,
+  name,
+  phone,
+}: {
+  message: string;
+  name: string;
+  phone: string;
+}) => {
   try {
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -14,7 +22,7 @@ export const sendEmail = async (message: string) => {
       },
     });
     await transporter.verify();
-    const emailTemplate = generateEmailTemplate({ message });
+    const emailTemplate = generateEmailTemplate({ message, name, phone });
 
     await transporter.sendMail({
       from: "Mosquito landing page <ilia1997ap76@gmail.com>",
@@ -39,7 +47,15 @@ export const sendEmail = async (message: string) => {
   }
 };
 
-function generateEmailTemplate({ message }: { message: unknown }) {
+function generateEmailTemplate({
+  message,
+  name,
+  phone,
+}: {
+  message: unknown;
+  name: string;
+  phone: string;
+}) {
   return `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -366,6 +382,9 @@ function generateEmailTemplate({ message }: { message: unknown }) {
               <tr>
                 <td class="wrapper">
                   <h2>Нова заявка на вебсайті</h2>
+                  <br />
+                  <p>Ім'я: ${name}</p>
+                  <p>Телефон: ${phone}</p>
                   <br />
                   <p>Повідомлення: ${message}</p>
                 </td>

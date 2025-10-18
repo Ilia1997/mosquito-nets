@@ -3,7 +3,8 @@ import { useMemo, useRef, useState } from "react";
 import * as Label from "@radix-ui/react-label";
 import Image from "next/image";
 import { PromoTopBar } from "@/app/PagePromoTop";
-import { sendEmail } from "@/app/actions";
+import { StockWidget } from "@/app/StockWidget";
+import ModalEmailForm from "@/app/ModalEmailForm";
 
 // --- ПРАЙС/НАСТРОЙКИ ---
 const PRICE_PER_M2 = 90; // MDL за м² (пример)
@@ -23,10 +24,11 @@ function formatMDL(value: number) {
 
 export default function MosquitoScreensLanding() {
   const calcRef = useRef<HTMLDivElement | null>(null);
-  const [widthMm, setWidthMm] = useState<number | "">(""); // ширина в мм
-  const [heightMm, setHeightMm] = useState<number | "">(""); // высота в мм
+  const [widthMm, setWidthMm] = useState<number | "">("");
+  const [heightMm, setHeightMm] = useState<number | "">("");
   const [qty, setQty] = useState<number | "">("");
-  const [sendEmailState, setSendEmailState] = useState(false);
+  const [modalState, setModalState] = useState(false);
+  const [message, setMessage] = useState("");
 
   const areaM2 = useMemo(() => {
     if (!widthMm || !heightMm || !qty) return 0;
@@ -71,6 +73,13 @@ export default function MosquitoScreensLanding() {
   return (
     <main className="min-h-screen bg-white text-gray-900">
       <PromoTopBar />
+      <StockWidget />
+      <ModalEmailForm
+        open={modalState}
+        setOpen={setModalState}
+        message={message}
+      />
+
       {/* HERO */}
       <section className="relative isolate overflow-hidden">
         <div className="mx-auto max-w-7xl px-4 py-5 sm:py-20 lg:px-8">
@@ -122,7 +131,7 @@ export default function MosquitoScreensLanding() {
       <section ref={calcRef} className="bg-gray-50 py-16" id="calc">
         <div className="mx-auto max-w-3xl px-4 lg:px-8">
           <h2 className="text-2xl font-bold sm:text-3xl">
-            Рассчитать стоимость
+            Рассчитать приблизительную стоимость
           </h2>
           <p className="mt-2 text-gray-600">
             Укажите размеры <span className="font-medium">в миллиметрах</span> и
@@ -205,6 +214,10 @@ export default function MosquitoScreensLanding() {
                 <span>{rawTotal ? formatMDL(rawTotal) : "—"}</span>
               </div>
               <p className="text-xs text-gray-500">
+                * Если у вас разные размеры окон, свяжитесь с нами для точного
+                расчета.
+              </p>
+              <p className="text-xs text-gray-500">
                 * В стоимости учтены материалы и сборка. Доставка/монтаж
                 рассчитываются отдельно в зависимости от города.
               </p>
@@ -212,24 +225,21 @@ export default function MosquitoScreensLanding() {
 
             <div className="flex flex-wrap items-center gap-3">
               <button
-                disabled={hasErrors || sendEmailState}
+                disabled={hasErrors}
                 className="rounded-2xl bg-black px-5 py-3 text-white shadow hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
                 onClick={async () => {
                   if (hasErrors) return;
                   const w = Number(widthMm);
                   const h = Number(heightMm);
                   const q = Number(qty);
-                  const msg = `Здравствуйте! Хочу заказать москітные сетки.\nРазмеры: ${w}×${h} мм, количество: ${q}.\nИтого к оплате: ${formatMDL(
+                  const msg = `Размеры: ${w}×${h} мм, количество: ${q}.\nИтого к оплате: ${formatMDL(
                     rawTotal
-                  )}. Подскажите сроки и монтаж.`;
-
-                  await sendEmail(msg);
-                  setSendEmailState(true);
+                  )}.`;
+                  setMessage(msg);
+                  setModalState(true);
                 }}
               >
-                {sendEmailState
-                  ? "Заявка отправлена! Наш менеджер свяжется с вами в ближайшее время."
-                  : "Узнать итоговую стоимость"}
+                Узнать итоговую стоимость
               </button>
               <button
                 onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
