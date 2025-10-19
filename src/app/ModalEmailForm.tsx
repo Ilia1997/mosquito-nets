@@ -1,4 +1,3 @@
-import { sendEmail } from "@/app/actions";
 import { fbEvent } from "@/lib/fbpixel";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import React from "react";
@@ -15,6 +14,7 @@ const ModalEmailForm = ({
   const [phone, setPhone] = React.useState("");
   const [name, setName] = React.useState("");
   const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   return (
     <AlertDialog.Root open={open} onOpenChange={setOpen}>
       <AlertDialog.Portal>
@@ -68,18 +68,27 @@ const ModalEmailForm = ({
                       alert("Пожалуйста, заполните все поля.");
                       return;
                     }
+                    setIsSubmitting(true);
                     fbEvent("Lead", {
                       message,
                       name,
                       phone,
                       status: "new",
                     });
-                    await sendEmail({ message, name, phone });
+                    await fetch("/api/sendEmail", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({ message, name, phone }),
+                    });
                     setIsSubmitted(true);
+                    setIsSubmitting(false);
                   }}
-                  className="inline-flex h-[35px] items-center justify-center rounded bg-gray-700 px-[15px] font-medium leading-none text-white outline-none outline-offset-1 hover:bg-red5 focus-visible:outline-2 focus-visible:outline-green-300"
+                  disabled={isSubmitting}
+                  className="inline-flex h-[35px] items-center justify-center rounded bg-gray-700 px-[15px] font-medium leading-none text-white outline-none outline-offset-1 hover:bg-red5 focus-visible:outline-2 focus-visible:outline-green-300 disabled:opacity-50 cursor-pointer"
                 >
-                  Отправить
+                  {isSubmitting ? "Отправка..." : "Отправить"}
                 </button>
               </div>
             </>
@@ -93,7 +102,7 @@ const ModalEmailForm = ({
               </AlertDialog.Description>
               <div className="flex justify-end gap-[25px]">
                 <AlertDialog.Action asChild>
-                  <button className="inline-flex h-[35px] items-center justify-center rounded bg-gray-700 px-[15px] font-medium leading-none text-white outline-none outline-offset-1 hover:bg-red5 focus-visible:outline-2 focus-visible:outline-green-300">
+                  <button className="inline-flex h-[35px] items-center justify-center rounded bg-gray-700 px-[15px] font-medium leading-none text-white outline-none outline-offset-1 hover:bg-red5 focus-visible:outline-2 focus-visible:outline-green-300 ">
                     Закрыть
                   </button>
                 </AlertDialog.Action>

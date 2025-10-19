@@ -1,8 +1,14 @@
-"use server";
+export async function POST(request: Request) {
+  const { message, name, phone } = await request.json();
+  await sendEmail({ message, name, phone });
+  return Response.json({
+    status: "success",
+  });
+}
 
 import nodemailer from "nodemailer";
 
-export const sendEmail = async ({
+const sendEmail = async ({
   message,
   name,
   phone,
