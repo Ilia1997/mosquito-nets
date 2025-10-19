@@ -23,7 +23,7 @@ const ModalEmailForm = ({
             <>
               {" "}
               <AlertDialog.Title className="m-0 text-[17px] font-semibold text-gray-700 mb-5">
-                Оствавить заявку на расчет
+                Оставить заявку на расчет
               </AlertDialog.Title>
               <form>
                 <div className="mb-4">
