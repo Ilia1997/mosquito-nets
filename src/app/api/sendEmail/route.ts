@@ -4,7 +4,7 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   const { message, name, phone } = await request.json();
-  //await sendEmail({ message, name, phone });
+  await sendEmail({ message, name, phone });
   return Response.json({
     status: "success",
   });
@@ -28,8 +28,11 @@ const sendEmail = async ({
         user: process.env.GOOGLE_APP_EMAIL,
         pass: process.env.GOOGLE_APP_PASSWORD,
       },
+      connectionTimeout: 15_000, // 15s
+      socketTimeout: 20_000, // 20s
+      greetingTimeout: 10_000, // 10s
     });
-    await transporter.verify();
+    //await transporter.verify();
     const emailTemplate = generateEmailTemplate({ message, name, phone });
 
     await transporter.sendMail({
