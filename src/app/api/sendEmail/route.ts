@@ -1,3 +1,4 @@
+import { sendTelegramLead } from "@/lib/telegram";
 import { Resend } from "resend";
 
 export const runtime = "nodejs";
@@ -24,13 +25,16 @@ const sendEmail = async ({
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const res = await resend.emails.send({
+    await resend.emails.send({
       from: "Mosquito landing page <onboarding@resend.dev>",
       to: "ilia1997ap76@gmail.com",
       subject: "Нова заявка на вебсайті",
       html: emailTemplate,
     });
-    console.log("Email sent successfully:", res);
+
+    sendTelegramLead({ name, phone, message }).then((r) => {
+      if (!r.ok) console.error("[telegram]", r.error);
+    });
 
     return {
       data: {
