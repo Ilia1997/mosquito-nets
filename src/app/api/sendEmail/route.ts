@@ -1,3 +1,7 @@
+import nodemailer from "nodemailer";
+
+export const runtime = "nodejs";
+
 export async function POST(request: Request) {
   const { message, name, phone } = await request.json();
   await sendEmail({ message, name, phone });
@@ -5,8 +9,6 @@ export async function POST(request: Request) {
     status: "success",
   });
 }
-
-import nodemailer from "nodemailer";
 
 const sendEmail = async ({
   message,
