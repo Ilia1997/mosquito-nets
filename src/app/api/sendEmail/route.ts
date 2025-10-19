@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 export const runtime = "nodejs";
 
@@ -20,23 +20,14 @@ const sendEmail = async ({
   phone: string;
 }) => {
   try {
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: "ilia1997ap76@gmail.com",
-        pass: "uhwa uszv bafv bymv",
-      },
-    });
-    //await transporter.verify();
     const emailTemplate = generateEmailTemplate({ message, name, phone });
 
-    await transporter.sendMail({
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    resend.emails.send({
       from: "Mosquito landing page <ilia1997ap76@gmail.com>",
       to: "ilia97ap76@gmail.com",
       subject: "Нова заявка на вебсайті",
-      text: "",
       html: emailTemplate,
     });
 
