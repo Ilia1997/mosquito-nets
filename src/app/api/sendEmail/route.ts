@@ -24,12 +24,13 @@ const sendEmail = async ({
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    resend.emails.send({
-      from: "Mosquito landing page <ilia1997ap76@gmail.com>",
-      to: "ilia97ap76@gmail.com",
+    const res = await resend.emails.send({
+      from: "Mosquito landing page <no-reply@your-domain.md>",
+      to: "ilia1997ap76@gmail.com",
       subject: "Нова заявка на вебсайті",
       html: emailTemplate,
     });
+    console.log("Email sent successfully:", res);
 
     return {
       data: {
