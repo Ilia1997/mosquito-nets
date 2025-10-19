@@ -4,7 +4,7 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   const { message, name, phone } = await request.json();
-  await sendEmail({ message, name, phone });
+  //await sendEmail({ message, name, phone });
   return Response.json({
     status: "success",
   });
