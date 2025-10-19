@@ -374,7 +374,7 @@ export default function MosquitoScreensLanding() {
             Готовы защитить дом от комаров?
           </h3>
 
-          <div className="mt-8 flex justify-center gap-3">
+          {/* <div className="mt-8 flex justify-center gap-3">
             <button
               onClick={scrollToCalc}
               className="rounded-2xl bg-white px-6 py-3 font-medium text-black hover:opacity-90"
@@ -387,7 +387,7 @@ export default function MosquitoScreensLanding() {
             >
               Позвонить: +373 00 000 000
             </a>
-          </div>
+          </div> */}
         </div>
       </section>
 
