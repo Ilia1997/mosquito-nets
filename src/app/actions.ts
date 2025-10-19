@@ -1,5 +1,7 @@
 "use server";
 
+export const runtime = "nodejs";
+
 import nodemailer from "nodemailer";
 
 export const sendEmail = async ({
