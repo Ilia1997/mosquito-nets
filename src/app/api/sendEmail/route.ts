@@ -22,7 +22,9 @@ const sendEmail = async ({
 }) => {
   try {
     const emailTemplate = generateEmailTemplate({ message, name, phone });
-
+    sendTelegramLead({ name, phone, message }).then((r) => {
+      if (!r.ok) console.error("[telegram]", r.error);
+    });
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     await resend.emails.send({
@@ -30,10 +32,6 @@ const sendEmail = async ({
       to: "ilia1997ap76@gmail.com",
       subject: "Нова заявка на вебсайті",
       html: emailTemplate,
-    });
-
-    sendTelegramLead({ name, phone, message }).then((r) => {
-      if (!r.ok) console.error("[telegram]", r.error);
     });
 
     return {
