@@ -1,4 +1,5 @@
 import { sendEmail } from "@/app/actions";
+import { fbEvent } from "@/lib/fbpixel";
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import React from "react";
 
@@ -67,6 +68,12 @@ const ModalEmailForm = ({
                       alert("Пожалуйста, заполните все поля.");
                       return;
                     }
+                    fbEvent("Lead", {
+                      message,
+                      name,
+                      phone,
+                      status: "new",
+                    });
                     await sendEmail({ message, name, phone });
                     setIsSubmitted(true);
                   }}
