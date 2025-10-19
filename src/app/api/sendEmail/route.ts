@@ -25,7 +25,7 @@ const sendEmail = async ({
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const res = await resend.emails.send({
-      from: "Mosquito landing page <no-reply@your-domain.md>",
+      from: "Mosquito landing page <onboarding@resend.dev>",
       to: "ilia1997ap76@gmail.com",
       subject: "Нова заявка на вебсайті",
       html: emailTemplate,
