@@ -25,12 +25,9 @@ const sendEmail = async ({
       port: 587,
       secure: false,
       auth: {
-        user: process.env.GOOGLE_APP_EMAIL,
-        pass: process.env.GOOGLE_APP_PASSWORD,
+        user: "ilia1997ap76@gmail.com",
+        pass: "uhwa uszv bafv bymv",
       },
-      connectionTimeout: 15_000, // 15s
-      socketTimeout: 20_000, // 20s
-      greetingTimeout: 10_000, // 10s
     });
     //await transporter.verify();
     const emailTemplate = generateEmailTemplate({ message, name, phone });
